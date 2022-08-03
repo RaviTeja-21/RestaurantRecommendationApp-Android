@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:background="#89909E"
+
+    >
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="70dp"
+        android:src="@drawable/splashscreen" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/linerlayoutbg">
+
+        <TextView
+            android:id="@+id/txtregister"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="30dp"
+            android:text="Create Account"
+            android:textColor="#89909E"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="30dp"
+            android:text="Login"
+            android:textColor="@color/purple_500"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="100dp"
+            android:text="Email Address"
+            android:textColor="#9CA3AF"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/loginemail"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/edittextbg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="210dp"
+            android:text="Password"
+            android:textColor="#9CA3AF"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/loginpassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="250dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/edittextbg" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="350dp"
+            android:layout_marginRight="70dp"
+            android:background="@drawable/buttonbg"
+            android:text="Login"
+            android:textAlignment="center"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/forgotpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="430dp"
+            android:layout_marginRight="70dp"
+            android:gravity="center"
+            android:text="Forgot Password"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="180dp"
+            android:layout_marginTop="470dp"
+            android:layout_marginRight="70dp"
+            android:src="@drawable/gmail"
+            android:id="@+id/googlelogin"
+            android:textAlignment="center" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
