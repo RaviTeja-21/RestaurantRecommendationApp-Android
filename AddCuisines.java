@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -94,12 +95,19 @@ public class AddCuisines extends AppCompatActivity {
 
             Map<String, String> items = new HashMap<>();
             items.put("name", etcuisinesname);
-            items.put("imageUrl", cuisineimageurl);
+            items.put("imageURL", cuisineimageurl);
             items.put("adminid", userid);
 
-            dbroot.collection("cuisines").add(items);
+            dbroot.collection("cuisines").add(items).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                  @Override
+                  public void onSuccess(DocumentReference documentReference) {
+                      Toast.makeText(AddCuisines.this, "Add cuisines SuccessFully", Toast.LENGTH_SHORT).show();
+                      Intent intent = new Intent(AddCuisines.this, ListCuisines.class);
+                      startActivity(intent);
+                  }
+              });
             // Toast.makeText(AddTheaterActivity.this, "Url" + theaterimageurl, Toast.LENGTH_SHORT).show();
-            Toast.makeText(AddCuisines.this, "Add cuisines SuccessFully", Toast.LENGTH_SHORT).show();
+
         }
     }
 
