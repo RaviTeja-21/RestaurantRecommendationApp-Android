@@ -17,6 +17,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class CuisineDetailsActivity extends AppCompatActivity {
 
     FusedLocationProviderClient client;
 
-    public String cuisinename;
+    String cuisinename;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +111,22 @@ public class CuisineDetailsActivity extends AppCompatActivity {
                     String restaurnatID = d.getId();
                     restaurnatDetails obj = d.toObject(restaurnatDetails.class);
                     obj.setRestaurnatID(restaurnatID);
-                    restaurnatDetails.add(obj);
+                  //  Toast.makeText(CuisineDetailsActivity.this, obj.getCuisinenames(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(CuisineDetailsActivity.this, obj.getCuisinenames(), Toast.LENGTH_SHORT).show();
+                    String input = obj.getCuisinenames();
+                    if(!TextUtils.isEmpty(input)){
+                        boolean isFound = input.indexOf(cuisinename) !=-1? true: false; //true
+
+                        if (isFound == true){
+                            restaurnatDetails.add(obj);
+                           // Toast.makeText(CuisineDetailsActivity.this, "testt", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    /*if (obj.getCuisinenames().contains(cuisinename)){
+                        Toast.makeText(CuisineDetailsActivity.this, "contains exisits", Toast.LENGTH_SHORT).show();
+                    }*/
+
                 }
                 restaurantAdapter.notifyDataSetChanged();
             }

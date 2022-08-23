@@ -3,7 +3,6 @@ package com.example.foodworld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -26,7 +24,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     FirebaseFirestore dbroot;
+    DatabaseReference dbref;
 
     com.google.android.gms.common.SignInButton  googlelogin;
 
@@ -64,6 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
         txtlogin = findViewById(R.id.txtlogin);
 
         googlelogin = findViewById(R.id.googlesigninregister);
+
+        dbref = FirebaseDatabase.getInstance().getReference();
 
         firebaseAuth = FirebaseAuth.getInstance();
         if (getSupportActionBar() != null) {
@@ -112,28 +119,48 @@ public class RegisterActivity extends AppCompatActivity {
 
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
 
-                /*SignInCredential googleCredential = oneTapClient.getSignInCredentialFromIntent(data);
-                String idToken = googleCredential.getGoogleIdToken();*/
-
-                // Got an ID token from Google. Use it to authenticate
-                // with Firebase.
-                //  AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
                 firebaseAuth.signInWithCredential(credential)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                // Sign in success, update UI with the signed-in user's information
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    Toast.makeText(RegisterActivity.this, "User Loggedin", Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                                    finish();
-                                    Intent intent = new Intent(RegisterActivity.this, UserHome.class);
-                                    startActivity(intent);
+                                    String userId = firebaseAuth.getCurrentUser().getUid();
+                                    FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                                    DocumentReference docIdRef = rootRef.collection("Users").document(userId);
+                                    docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                 //   Toast.makeText(RegisterActivity.this, "User is exisits", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(RegisterActivity.this, UserHome.class);
+                                                    startActivity(intent);
+                                                }
+                                                else{
+
+                                                    HashMap<String, Object> userdataMap = new HashMap<>();
+                                                    userdataMap.put("email",  firebaseAuth.getCurrentUser().getEmail());
+                                                    userdataMap.put("phone", firebaseAuth.getCurrentUser().getPhoneNumber());
+                                                    userdataMap.put("username", firebaseAuth.getCurrentUser().getDisplayName());
+                                                    userdataMap.put("id", firebaseAuth.getCurrentUser().getUid());
+
+                                                    rootRef.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).set(userdataMap);
+
+                                                  //  Toast.makeText(RegisterActivity.this, "User is not exisits", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(RegisterActivity.this, UserHome.class);
+                                                    startActivity(intent);
+                                                }
+                                            }
+                                        }
+                                    });
+
+
 
                                 } else {
-                                    // If sign in fails, display a message to the user.
-
-
+                                    Toast.makeText(RegisterActivity.this, "User not Loggedin", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

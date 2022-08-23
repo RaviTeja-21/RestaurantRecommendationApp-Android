@@ -430,7 +430,8 @@ public class UserHome extends AppCompatActivity {
                 getcurrentlocation();
             }
         }else{
-            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+          /*  getcurrentlocation();
+            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();*/
         }
     }
 }
