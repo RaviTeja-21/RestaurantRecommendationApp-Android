@@ -30,6 +30,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -124,22 +129,47 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    Toast.makeText(LoginActivity.this, "User Loggedin", Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                                    Intent intent = new Intent(LoginActivity.this, UserHome.class);
-                                    startActivity(intent);
+                                    String userId = firebaseAuth.getCurrentUser().getUid();
+                                    FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+                                    DocumentReference docIdRef = rootRef.collection("Users").document(userId);
+                                    docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                  //  Toast.makeText(LoginActivity.this, "User is exisits", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(LoginActivity.this, UserHome.class);
+                                                    startActivity(intent);
+                                                }
+                                                else{
+                                                    HashMap<String, Object> userdataMap = new HashMap<>();
+                                                    userdataMap.put("email",  firebaseAuth.getCurrentUser().getEmail());
+                                                    userdataMap.put("phone", firebaseAuth.getCurrentUser().getPhoneNumber());
+                                                    userdataMap.put("username", firebaseAuth.getCurrentUser().getDisplayName());
+                                                    userdataMap.put("id", firebaseAuth.getCurrentUser().getUid());
+
+                                                    rootRef.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).set(userdataMap);
+
+                                                  //  Toast.makeText(LoginActivity.this, "User is not exisits", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(LoginActivity.this, UserHome.class);
+                                                    startActivity(intent);
+                                                }
+                                            }
+                                        }
+                                    });
+
+
 
                                 } else {
-                                    // If sign in fails, display a message to the user.
-
-
+                                    Toast.makeText(LoginActivity.this, "User not Loggedin", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
 
-                finish();
+               /* finish();
                 Intent i = new Intent(LoginActivity.this,UserHome.class);
-                startActivity(i);
+                startActivity(i);*/
             } catch (ApiException e) {
                 Toast.makeText(this, "Something went wrong"+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -169,7 +199,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         String useremail = user.getEmail().toString();
                         if(useremail.equals("testaccount@gmail.com")){
-                            startActivity(new Intent(LoginActivity.this,Home.class));
+                            startActivity(new Intent(LoginActivity.this,AdminHome.class));
                         }
                         else{
                             startActivity(new Intent(LoginActivity.this,UserHome.class));
